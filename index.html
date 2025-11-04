@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>trò chơi cho Phương Thảo cụa tuiii❤️💚 </title>
+    <title>QR Code Dễ Thương Cho Người Yêu</title>
     <style>
         * {
             margin: 0;
@@ -439,8 +439,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💝 Gửi Tình Yêu Của anhh 💝</h1>
-            <p>Trả lời các câu hỏi điiii hihi không trả lời được là hok có quà đâu </p>
+            <h1>💝 Gửi Tình Yêu Của Em 💝</h1>
+            <p>Trả lời các câu hỏi và nhận mã QR đặc biệt cuối cùng!</p>
             
             <!-- Hearts floating in the background -->
             <div class="heart" style="top: 20px; left: 10%;">❤️</div>
@@ -552,7 +552,11 @@
             <div class="admin-section" id="adminSection">
                 <h3>📊 Câu trả lời của người dùng</h3>
                 <p>Đây là tất cả câu trả lời đã được lưu:</p>
-                <div class="answers-list" id="answersList"></div>
+                <div class="answers-list" id="answersList">
+                    <div class="answer-item" id="noAnswersMessage" style="text-align: center; color: #888; padding: 20px;">
+                        Chưa có câu trả lời nào được lưu
+                    </div>
+                </div>
                 
                 <div class="admin-login">
                     <h4>Đăng nhập Admin</h4>
@@ -576,7 +580,7 @@
 
     <script>
         // Biến lưu trữ câu trả lời
-        const answers = {};
+        let answers = {};
         let answeredCount = 0;
         let currentQuestion = 1;
         let isAdminLoggedIn = false;
@@ -594,6 +598,12 @@
             
             // Lưu câu trả lời
             answers[questionNumber] = answer;
+            
+            // Vô hiệu hóa input và nút sau khi lưu
+            answerInput.disabled = true;
+            const saveButton = answerInput.nextElementSibling;
+            saveButton.disabled = true;
+            saveButton.textContent = 'Đã lưu ✓';
             
             // Cập nhật tiến độ
             answeredCount++;
@@ -674,9 +684,19 @@
         // Hàm cập nhật phần admin
         function updateAdminSection() {
             const answersList = document.getElementById('answersList');
+            const noAnswersMessage = document.getElementById('noAnswersMessage');
             
             // Xóa nội dung cũ
             answersList.innerHTML = '';
+            
+            // Kiểm tra nếu có câu trả lời
+            if (Object.keys(answers).length === 0) {
+                noAnswersMessage.style.display = 'block';
+                answersList.appendChild(noAnswersMessage);
+                return;
+            } else {
+                noAnswersMessage.style.display = 'none';
+            }
             
             // Thêm từng câu trả lời
             Object.keys(answers).forEach(questionNumber => {
@@ -737,9 +757,7 @@
                 localStorage.removeItem('loveQuestionnaireAnswers');
                 
                 // Xóa dữ liệu trong biến answers
-                Object.keys(answers).forEach(key => {
-                    delete answers[key];
-                });
+                answers = {};
                 
                 // Reset biến đếm
                 answeredCount = 0;
@@ -780,6 +798,10 @@
                 adminSection.style.display = 'none';
             } else {
                 adminSection.style.display = 'block';
+                // Nếu đã đăng nhập admin, cập nhật danh sách câu trả lời
+                if (isAdminLoggedIn) {
+                    updateAdminSection();
+                }
                 adminSection.scrollIntoView({ behavior: 'smooth' });
             }
         }
@@ -788,35 +810,46 @@
         window.onload = function() {
             const savedAnswers = localStorage.getItem('loveQuestionnaireAnswers');
             if (savedAnswers) {
-                const parsedAnswers = JSON.parse(savedAnswers);
-                
-                // Khôi phục câu trả lời đã lưu
-                Object.keys(parsedAnswers).forEach(questionNumber => {
-                    const answerInput = document.querySelector(`.answer-input[data-question="${questionNumber}"]`);
+                try {
+                    const parsedAnswers = JSON.parse(savedAnswers);
                     
-                    answerInput.value = parsedAnswers[questionNumber];
-                    answers[questionNumber] = parsedAnswers[questionNumber];
-                    answeredCount++;
-                });
-                
-                updateProgress();
-                
-                // Hiển thị câu hỏi hiện tại (câu chưa trả lời đầu tiên hoặc câu cuối cùng)
-                const allQuestions = document.querySelectorAll('.question-container');
-                allQuestions.forEach(q => q.classList.remove('active'));
-                
-                if (answeredCount < 10) {
-                    currentQuestion = answeredCount + 1;
-                    document.getElementById(`question${currentQuestion}`).classList.add('active');
-                } else {
-                    // Nếu đã trả lời hết câu hỏi, hiển thị hòm châu báu
-                    document.getElementById(`question10`).classList.add('active');
-                    showTreasure();
+                    // Khôi phục câu trả lời đã lưu
+                    Object.keys(parsedAnswers).forEach(questionNumber => {
+                        const answerInput = document.querySelector(`.answer-input[data-question="${questionNumber}"]`);
+                        
+                        if (answerInput) {
+                            answerInput.value = parsedAnswers[questionNumber];
+                            answerInput.disabled = true;
+                            const saveButton = answerInput.nextElementSibling;
+                            saveButton.disabled = true;
+                            saveButton.textContent = 'Đã lưu ✓';
+                        }
+                        
+                        answers[questionNumber] = parsedAnswers[questionNumber];
+                        answeredCount++;
+                    });
                     
-                    // Nếu đã mở hòm trước đó, hiển thị nội dung
-                    if (treasureOpened) {
-                        document.getElementById('treasureBox').classList.add('open');
+                    updateProgress();
+                    
+                    // Hiển thị câu hỏi hiện tại (câu chưa trả lời đầu tiên hoặc câu cuối cùng)
+                    const allQuestions = document.querySelectorAll('.question-container');
+                    allQuestions.forEach(q => q.classList.remove('active'));
+                    
+                    if (answeredCount < 10) {
+                        currentQuestion = answeredCount + 1;
+                        document.getElementById(`question${currentQuestion}`).classList.add('active');
+                    } else {
+                        // Nếu đã trả lời hết câu hỏi, hiển thị hòm châu báu
+                        document.getElementById(`question10`).classList.add('active');
+                        showTreasure();
+                        
+                        // Nếu đã mở hòm trước đó, hiển thị nội dung
+                        if (treasureOpened) {
+                            document.getElementById('treasureBox').classList.add('open');
+                        }
                     }
+                } catch (e) {
+                    console.error('Lỗi khi đọc dữ liệu từ localStorage:', e);
                 }
             }
         };
