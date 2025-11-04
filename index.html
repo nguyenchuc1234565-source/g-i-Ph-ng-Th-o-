@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>trò chơi cho Phương Thảo cụa tuiii❤️💚 </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+            transform: scale(1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            color: #ff758c;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ffe0e6;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 50px;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #ff758c;
+        }
+        
+        .save-btn {
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: block;
+            margin: 15px auto 0;
+            font-weight: 600;
+        }
+        
+        .save-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+        }
+        
+        .save-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #ffe0e6;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .progress-text {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #ff758c;
+        }
+        
+        .treasure-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 30px;
+            background-color: #fff9fa;
+            border-radius: 15px;
+            border: 2px dashed #ffc3d0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .treasure-title {
+            font-size: 1.8rem;
+            color: #ff758c;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .treasure-box {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #ffd700, #ffec8b);
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+        
+        .treasure-box:hover {
+            transform: scale(1.05);
+        }
+        
+        .treasure-lid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(45deg, #ffcc00, #ffdb4d);
+            border-radius: 10px 10px 0 0;
+            transform-origin: top;
+            transition: transform 0.8s;
+        }
+        
+        .treasure-box.open .treasure-lid {
+            transform: rotateX(180deg);
+        }
+        
+        .treasure-content {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 1s ease;
+        }
+        
+        .treasure-box.open ~ .treasure-content {
+            display: block;
+        }
+        
+        .treasure-text {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ff758c;
+        }
+        
+        .qr-image {
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+            border: 5px solid #ff758c;
+            border-radius: 10px;
+            display: block;
+        }
+        
+        .computer-notice {
+            margin: 10px 0;
+            font-style: italic;
+            color: #ff758c;
+            font-size: 0.9rem;
+        }
+        
+        .account-info {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+        }
+        
+        .account-info p {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+        
+        .special-link {
+            display: block;
+            margin: 15px auto;
+            padding: 12px 20px;
+            background: linear-gradient(to right, #6a89cc, #4a69bd);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            width: fit-content;
+            transition: transform 0.3s;
+        }
+        
+        .special-link:hover {
+            transform: scale(1.05);
+        }
+        
+        .download-btn {
+            background: linear-gradient(to right, #6a89cc, #4a69bd);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-top: 10px;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-btn {
+            background: linear-gradient(to right, #6a89cc, #4a69bd);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .admin-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .admin-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            display: none;
+        }
+        
+        .admin-section h3 {
+            color: #ff758c;
+            margin-bottom: 15px;
+        }
+        
+        .answers-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        
+        .answer-item {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .answer-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            color: #ff758c;
+        }
+        
+        .answer-text {
+            margin-top: 5px;
+        }
+        
+        .admin-login {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .admin-login input {
+            padding: 8px 12px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+        }
+        
+        .admin-login button {
+            background: linear-gradient(to right, #6a89cc, #4a69bd);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .admin-login button:hover {
+            opacity: 0.9;
+        }
+        
+        .admin-actions {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .delete-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .delete-btn:hover {
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+            }
+            
+            .admin-login input {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💝 Gửi Tình Yêu Của anhh 💝</h1>
+            <p>Trả lời các câu hỏi điiii hihi không trả lời được là hok có quà đâu </p>
+            
+            <!-- Hearts floating in the background -->
+            <div class="heart" style="top: 20px; left: 10%;">❤️</div>
+            <div class="heart" style="top: 40px; right: 15%;">💖</div>
+            <div class="heart" style="bottom: 30px; left: 20%;">💕</div>
+            <div class="heart" style="bottom: 20px; right: 10%;">💗</div>
+        </div>
+        
+        <div class="content">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">Đã trả lời: 0/10 câu hỏi</div>
+            </div>
+            
+            <!-- Question 1 -->
+            <div class="question-container active" id="question1">
+                <div class="question">1. Muộn rồi sao chưa ngủ -.-</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="1"></textarea>
+                <button class="save-btn" onclick="saveAnswer(1)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question-container" id="question2">
+                <div class="question">2. Đói chưa bà?</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="2"></textarea>
+                <button class="save-btn" onclick="saveAnswer(2)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question-container" id="question3">
+                <div class="question">3. Biết hôm nay là ngày gì không?</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="3"></textarea>
+                <button class="save-btn" onclick="saveAnswer(3)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question-container" id="question4">
+                <div class="question">4. Biết giờ này là giờ rồi chưaaaaaa?</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="4"></textarea>
+                <button class="save-btn" onclick="saveAnswer(4)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question-container" id="question5">
+                <div class="question">5. Nè có yêu tui hok?</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="5"></textarea>
+                <button class="save-btn" onclick="saveAnswer(5)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question-container" id="question6">
+                <div class="question">6. Có muộn phiền, buồn j hok nhắn đây tui đọc</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="6"></textarea>
+                <button class="save-btn" onclick="saveAnswer(6)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question-container" id="question7">
+                <div class="question">7. Nêu 1 điểm xấu về tớ</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="7"></textarea>
+                <button class="save-btn" onclick="saveAnswer(7)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question-container" id="question8">
+                <div class="question">8. Nêu 1 điểm tốt về tớ</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="8"></textarea>
+                <button class="save-btn" onclick="saveAnswer(8)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question-container" id="question9">
+                <div class="question">9. Hiện tại yêu tui bao nhiêu % rùiii?</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="9"></textarea>
+                <button class="save-btn" onclick="saveAnswer(9)">Lưu và tiếp tục</button>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question-container" id="question10">
+                <div class="question">10. Nêu cảm nhận khi yêu tui 1 tháng</div>
+                <textarea class="answer-input" placeholder="Nhập câu trả lời của bạn ở đây..." data-question="10"></textarea>
+                <button class="save-btn" onclick="saveAnswer(10)">Lưu và nhận quà</button>
+            </div>
+            
+            <!-- Treasure Container -->
+            <div class="treasure-container" id="treasureContainer">
+                <div class="treasure-title">🎁 Hòm Châu Báu Của Bạn 🎁</div>
+                <div class="treasure-box" id="treasureBox" onclick="openTreasure()">
+                    <div class="treasure-lid"></div>
+                    <div style="font-size: 2rem;">💎</div>
+                </div>
+                <div class="treasure-content">
+                    <div class="treasure-text">Chúc mừng! Bạn đã nhận được phần thưởng!</div>
+                    <img src="/qr/anhqr.png" alt="QR Code" class="qr-image" id="qrImage">
+                    <p class="computer-notice">Dùng máy tính đăng nhập trải nghiệm sẽ tuyệt vời hơn</p>
+                    <div class="account-info">
+                        <p><strong>Thông tin tài khoản:</strong></p>
+                        <p>Tài khoản: Thanh Thảo</p>
+                        <p>Mật khẩu: 02042007</p>
+                    </div>
+                    <a href="http://ankhangyeuphuongthao.elementfx.com" target="_blank" class="special-link">Truy cập trang web đặc biệt</a>
+                    <button class="download-btn" onclick="downloadQR()">Tải Ảnh QR</button>
+                </div>
+            </div>
+            
+            <!-- Admin Section -->
+            <div class="admin-section" id="adminSection">
+                <h3>📊 Câu trả lời của người dùng</h3>
+                <p>Đây là tất cả câu trả lời đã được lưu:</p>
+                <div class="answers-list" id="answersList"></div>
+                
+                <div class="admin-login">
+                    <h4>Đăng nhập Admin</h4>
+                    <input type="text" id="adminUsername" placeholder="Tài khoản">
+                    <input type="password" id="adminPassword" placeholder="Mật khẩu">
+                    <button onclick="loginAdmin()">Đăng nhập</button>
+                </div>
+                
+                <div class="admin-actions" id="adminActions" style="display: none;">
+                    <h4>Quản lý dữ liệu</h4>
+                    <button class="delete-btn" onclick="deleteAllAnswers()">Xóa tất cả câu trả lời</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Made with ❤️ for your special someone</p>
+            <button class="admin-btn" onclick="toggleAdminSection()">Admin</button>
+        </div>
+    </div>
+
+    <script>
+        // Biến lưu trữ câu trả lời
+        const answers = {};
+        let answeredCount = 0;
+        let currentQuestion = 1;
+        let isAdminLoggedIn = false;
+        let treasureOpened = false;
+        
+        // Hàm lưu câu trả lời
+        function saveAnswer(questionNumber) {
+            const answerInput = document.querySelector(`.answer-input[data-question="${questionNumber}"]`);
+            const answer = answerInput.value.trim();
+            
+            if (answer === '') {
+                alert('Vui lòng nhập câu trả lời trước khi lưu!');
+                return;
+            }
+            
+            // Lưu câu trả lời
+            answers[questionNumber] = answer;
+            
+            // Cập nhật tiến độ
+            answeredCount++;
+            updateProgress();
+            
+            // Chuyển đến câu hỏi tiếp theo
+            if (questionNumber < 10) {
+                // Ẩn câu hỏi hiện tại
+                document.getElementById(`question${questionNumber}`).classList.remove('active');
+                
+                // Hiển thị câu hỏi tiếp theo
+                document.getElementById(`question${questionNumber + 1}`).classList.add('active');
+                
+                // Cuộn đến câu hỏi tiếp theo
+                document.getElementById(`question${questionNumber + 1}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Cập nhật câu hỏi hiện tại
+                currentQuestion = questionNumber + 1;
+            } else {
+                // Nếu là câu hỏi cuối cùng, hiển thị hòm châu báu
+                showTreasure();
+            }
+            
+            // Lưu tất cả câu trả lời vào localStorage
+            localStorage.setItem('loveQuestionnaireAnswers', JSON.stringify(answers));
+            
+            // Cập nhật phần admin nếu đã đăng nhập
+            if (isAdminLoggedIn) {
+                updateAdminSection();
+            }
+        }
+        
+        // Hàm cập nhật thanh tiến độ
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            const progressPercentage = (answeredCount / 10) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Đã trả lời: ${answeredCount}/10 câu hỏi`;
+        }
+        
+        // Hàm hiển thị hòm châu báu
+        function showTreasure() {
+            // Ẩn câu hỏi cuối cùng
+            document.getElementById(`question10`).classList.remove('active');
+            
+            // Hiển thị hòm châu báu
+            const treasureContainer = document.getElementById('treasureContainer');
+            treasureContainer.style.display = 'block';
+            
+            // Cuộn đến hòm châu báu
+            treasureContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Hàm mở hòm châu báu
+        function openTreasure() {
+            if (!treasureOpened) {
+                const treasureBox = document.getElementById('treasureBox');
+                treasureBox.classList.add('open');
+                
+                // Tải ảnh QR sau khi mở hòm
+                setTimeout(() => {
+                    treasureOpened = true;
+                }, 800);
+            }
+        }
+        
+        // Hàm tải ảnh QR
+        function downloadQR() {
+            const qrImage = document.getElementById('qrImage');
+            const link = document.createElement('a');
+            link.download = 'anhqr.png';
+            link.href = qrImage.src;
+            link.click();
+        }
+        
+        // Hàm cập nhật phần admin
+        function updateAdminSection() {
+            const answersList = document.getElementById('answersList');
+            
+            // Xóa nội dung cũ
+            answersList.innerHTML = '';
+            
+            // Thêm từng câu trả lời
+            Object.keys(answers).forEach(questionNumber => {
+                const answerItem = document.createElement('div');
+                answerItem.className = 'answer-item';
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = `Câu ${questionNumber}: ${getQuestionText(questionNumber)}`;
+                
+                const answerText = document.createElement('div');
+                answerText.className = 'answer-text';
+                answerText.textContent = `Trả lời: ${answers[questionNumber]}`;
+                
+                answerItem.appendChild(questionText);
+                answerItem.appendChild(answerText);
+                answersList.appendChild(answerItem);
+            });
+        }
+        
+        // Hàm lấy nội dung câu hỏi
+        function getQuestionText(questionNumber) {
+            const questions = {
+                1: "Muộn rồi sao chưa ngủ -.-",
+                2: "Đói chưa bà?",
+                3: "Biết hôm nay là ngày gì không?",
+                4: "Biết giờ này là giờ rồi chưaaaaaa?",
+                5: "Nè có yêu tui hok?",
+                6: "Có muộn phiền, buồn j hok nhắn đây tui đọc",
+                7: "Nêu 1 điểm xấu về tớ",
+                8: "Nêu 1 điểm tốt về tớ",
+                9: "Hiện tại yêu tui bao nhiêu % rùiii?",
+                10: "Nêu cảm nhận khi yêu tui 1 tháng"
+            };
+            
+            return questions[questionNumber] || `Câu hỏi ${questionNumber}`;
+        }
+        
+        // Hàm đăng nhập admin
+        function loginAdmin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (username === 'admin' && password === '24082007') {
+                isAdminLoggedIn = true;
+                updateAdminSection();
+                document.getElementById('adminActions').style.display = 'block';
+                alert('Đăng nhập admin thành công!');
+            } else {
+                alert('Tài khoản hoặc mật khẩu không đúng!');
+            }
+        }
+        
+        // Hàm xóa tất cả câu trả lời
+        function deleteAllAnswers() {
+            if (confirm('Bạn có chắc chắn muốn xóa tất cả câu trả lời không?')) {
+                // Xóa dữ liệu trong localStorage
+                localStorage.removeItem('loveQuestionnaireAnswers');
+                
+                // Xóa dữ liệu trong biến answers
+                Object.keys(answers).forEach(key => {
+                    delete answers[key];
+                });
+                
+                // Reset biến đếm
+                answeredCount = 0;
+                currentQuestion = 1;
+                
+                // Reset giao diện
+                updateProgress();
+                
+                // Ẩn hòm châu báu nếu đang hiển thị
+                document.getElementById('treasureContainer').style.display = 'none';
+                
+                // Reset tất cả các câu hỏi
+                const allQuestions = document.querySelectorAll('.question-container');
+                allQuestions.forEach(q => {
+                    q.classList.remove('active');
+                    const textarea = q.querySelector('.answer-input');
+                    textarea.value = '';
+                    textarea.disabled = false;
+                    const button = q.querySelector('.save-btn');
+                    button.disabled = false;
+                    button.textContent = q.id === 'question10' ? 'Lưu và nhận quà' : 'Lưu và tiếp tục';
+                });
+                
+                // Hiển thị lại câu hỏi đầu tiên
+                document.getElementById('question1').classList.add('active');
+                
+                // Cập nhật phần admin
+                updateAdminSection();
+                
+                alert('Đã xóa tất cả câu trả lời!');
+            }
+        }
+        
+        // Hàm hiển thị/ẩn phần admin
+        function toggleAdminSection() {
+            const adminSection = document.getElementById('adminSection');
+            if (adminSection.style.display === 'block') {
+                adminSection.style.display = 'none';
+            } else {
+                adminSection.style.display = 'block';
+                adminSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Kiểm tra nếu đã có câu trả lời được lưu trước đó
+        window.onload = function() {
+            const savedAnswers = localStorage.getItem('loveQuestionnaireAnswers');
+            if (savedAnswers) {
+                const parsedAnswers = JSON.parse(savedAnswers);
+                
+                // Khôi phục câu trả lời đã lưu
+                Object.keys(parsedAnswers).forEach(questionNumber => {
+                    const answerInput = document.querySelector(`.answer-input[data-question="${questionNumber}"]`);
+                    
+                    answerInput.value = parsedAnswers[questionNumber];
+                    answers[questionNumber] = parsedAnswers[questionNumber];
+                    answeredCount++;
+                });
+                
+                updateProgress();
+                
+                // Hiển thị câu hỏi hiện tại (câu chưa trả lời đầu tiên hoặc câu cuối cùng)
+                const allQuestions = document.querySelectorAll('.question-container');
+                allQuestions.forEach(q => q.classList.remove('active'));
+                
+                if (answeredCount < 10) {
+                    currentQuestion = answeredCount + 1;
+                    document.getElementById(`question${currentQuestion}`).classList.add('active');
+                } else {
+                    // Nếu đã trả lời hết câu hỏi, hiển thị hòm châu báu
+                    document.getElementById(`question10`).classList.add('active');
+                    showTreasure();
+                    
+                    // Nếu đã mở hòm trước đó, hiển thị nội dung
+                    if (treasureOpened) {
+                        document.getElementById('treasureBox').classList.add('open');
+                    }
+                }
+            }
+        };
+    </script>
+</body>
+</html>
