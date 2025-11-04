@@ -347,10 +347,17 @@
         .answer-item {
             padding: 10px;
             border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
         
         .answer-item:last-child {
             border-bottom: none;
+        }
+        
+        .answer-content {
+            flex: 1;
         }
         
         .question-text {
@@ -360,6 +367,21 @@
         
         .answer-text {
             margin-top: 5px;
+        }
+        
+        .delete-answer-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .delete-answer-btn:hover {
+            background: #ff5252;
         }
         
         .admin-login {
@@ -432,6 +454,16 @@
             .footer {
                 flex-direction: column;
                 gap: 10px;
+            }
+            
+            .answer-item {
+                flex-direction: column;
+            }
+            
+            .delete-answer-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                align-self: flex-end;
             }
         }
     </style>
@@ -550,24 +582,26 @@
             
             <!-- Admin Section -->
             <div class="admin-section" id="adminSection">
-                <h3>📊 Câu trả lời của người dùng</h3>
-                <p>Đây là tất cả câu trả lời đã được lưu:</p>
-                <div class="answers-list" id="answersList">
-                    <div class="answer-item" id="noAnswersMessage" style="text-align: center; color: #888; padding: 20px;">
-                        Chưa có câu trả lời nào được lưu
-                    </div>
-                </div>
-                
-                <div class="admin-login">
+                <h3>📊 Quản lý câu trả lời</h3>
+                <div class="admin-login" id="adminLoginForm">
                     <h4>Đăng nhập Admin</h4>
                     <input type="text" id="adminUsername" placeholder="Tài khoản">
                     <input type="password" id="adminPassword" placeholder="Mật khẩu">
                     <button onclick="loginAdmin()">Đăng nhập</button>
                 </div>
                 
-                <div class="admin-actions" id="adminActions" style="display: none;">
-                    <h4>Quản lý dữ liệu</h4>
-                    <button class="delete-btn" onclick="deleteAllAnswers()">Xóa tất cả câu trả lời</button>
+                <div id="adminContent" style="display: none;">
+                    <p>Đây là tất cả câu trả lời đã được lưu:</p>
+                    <div class="answers-list" id="answersList">
+                        <div class="answer-item" id="noAnswersMessage" style="text-align: center; color: #888; padding: 20px;">
+                            Chưa có câu trả lời nào được lưu
+                        </div>
+                    </div>
+                    
+                    <div class="admin-actions">
+                        <h4>Quản lý dữ liệu</h4>
+                        <button class="delete-btn" onclick="deleteAllAnswers()">Xóa tất cả câu trả lời</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -703,6 +737,9 @@
                 const answerItem = document.createElement('div');
                 answerItem.className = 'answer-item';
                 
+                const answerContent = document.createElement('div');
+                answerContent.className = 'answer-content';
+                
                 const questionText = document.createElement('div');
                 questionText.className = 'question-text';
                 questionText.textContent = `Câu ${questionNumber}: ${getQuestionText(questionNumber)}`;
@@ -711,10 +748,61 @@
                 answerText.className = 'answer-text';
                 answerText.textContent = `Trả lời: ${answers[questionNumber]}`;
                 
-                answerItem.appendChild(questionText);
-                answerItem.appendChild(answerText);
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-answer-btn';
+                deleteButton.textContent = 'Xóa';
+                deleteButton.onclick = function() {
+                    deleteAnswer(questionNumber);
+                };
+                
+                answerContent.appendChild(questionText);
+                answerContent.appendChild(answerText);
+                answerItem.appendChild(answerContent);
+                answerItem.appendChild(deleteButton);
                 answersList.appendChild(answerItem);
             });
+        }
+        
+        // Hàm xóa một câu trả lời cụ thể
+        function deleteAnswer(questionNumber) {
+            if (confirm(`Bạn có chắc muốn xóa câu trả lời cho câu ${questionNumber} không?`)) {
+                // Xóa câu trả lời
+                delete answers[questionNumber];
+                
+                // Reset trạng thái câu hỏi
+                resetQuestion(questionNumber);
+                
+                // Cập nhật số câu đã trả lời
+                answeredCount = Object.keys(answers).length;
+                
+                // Cập nhật localStorage
+                localStorage.setItem('loveQuestionnaireAnswers', JSON.stringify(answers));
+                
+                // Cập nhật tiến độ
+                updateProgress();
+                
+                // Ẩn hòm châu báu nếu đang hiển thị
+                if (answeredCount < 10) {
+                    document.getElementById('treasureContainer').style.display = 'none';
+                }
+                
+                // Cập nhật phần admin
+                updateAdminSection();
+                
+                alert(`Đã xóa câu trả lời cho câu ${questionNumber}`);
+            }
+        }
+        
+        // Hàm reset trạng thái câu hỏi
+        function resetQuestion(questionNumber) {
+            const answerInput = document.querySelector(`.answer-input[data-question="${questionNumber}"]`);
+            if (answerInput) {
+                answerInput.value = '';
+                answerInput.disabled = false;
+                const saveButton = answerInput.nextElementSibling;
+                saveButton.disabled = false;
+                saveButton.textContent = questionNumber === 10 ? 'Lưu và nhận quà' : 'Lưu và tiếp tục';
+            }
         }
         
         // Hàm lấy nội dung câu hỏi
@@ -742,8 +830,11 @@
             
             if (username === 'admin' && password === '24082007') {
                 isAdminLoggedIn = true;
+                // Ẩn form đăng nhập
+                document.getElementById('adminLoginForm').style.display = 'none';
+                // Hiển thị nội dung admin
+                document.getElementById('adminContent').style.display = 'block';
                 updateAdminSection();
-                document.getElementById('adminActions').style.display = 'block';
                 alert('Đăng nhập admin thành công!');
             } else {
                 alert('Tài khoản hoặc mật khẩu không đúng!');
@@ -798,10 +889,6 @@
                 adminSection.style.display = 'none';
             } else {
                 adminSection.style.display = 'block';
-                // Nếu đã đăng nhập admin, cập nhật danh sách câu trả lời
-                if (isAdminLoggedIn) {
-                    updateAdminSection();
-                }
                 adminSection.scrollIntoView({ behavior: 'smooth' });
             }
         }
